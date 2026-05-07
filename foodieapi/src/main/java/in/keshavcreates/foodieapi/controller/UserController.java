@@ -5,7 +5,6 @@ import in.keshavcreates.foodieapi.io.UserResponse;
 import in.keshavcreates.foodieapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
