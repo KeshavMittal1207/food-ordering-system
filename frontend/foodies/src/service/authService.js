@@ -1,15 +1,11 @@
-import axios from 'axios'
-
-const API_URL = "http://localhost:8080/api";
+import apiClient from './apiClient';
 
 export const registerUser = async (data) => {
-    try{
-    const response = await axios.post(
-        API_URL+"/register",
-        data
-    );
-    return response;
-}catch(error){
-    throw error;
-}
-}
+  const response = await apiClient.post('/api/register', data);
+  return response;
+};
+
+export const loginUser = async (data) => {
+  const response = await apiClient.post('/api/login', data);
+  return response.data;
+};
