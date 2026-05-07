@@ -4,6 +4,7 @@ import in.keshavcreates.foodieapi.io.UserRequest;
 import in.keshavcreates.foodieapi.io.UserResponse;
 import in.keshavcreates.foodieapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse registerUser(@RequestBody UserRequest userRequest){
+    public UserResponse registerUser(@Valid @RequestBody UserRequest userRequest){
         return userService.registerUser(userRequest);
     }
 }
