@@ -7,7 +7,7 @@ export const StoreContext = createContext(null);
 export const StoreContextProvider = (props) => {
   const [foodList, setFoodList] = useState([]);
   const [quantities, setQuantities] = useState({});
-  const [token , setToken] = useState("");
+  const [token , setToken] = useState(localStorage.getItem("authToken") || "");
 
   const increaseQuantity = async (foodId) => {
     setQuantities((prev) => ({
@@ -34,6 +34,11 @@ export const StoreContextProvider = (props) => {
   };
 
   useEffect(() => {
+    if (!token) {
+      setFoodList([]);
+      setQuantities({});
+      return;
+    }
     async function loadData() {
       try {
         const foods = await fetchFoodList();
@@ -51,7 +56,14 @@ export const StoreContextProvider = (props) => {
     }
 
     loadData();
-  }, []);
+  }, [token]);
+
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("authToken", token);
+    }
+  }, [token]);
 
   const contextValue = {
     foodList,
