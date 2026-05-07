@@ -1,6 +1,7 @@
 package in.keshavcreates.foodieapi.service;
 
 import in.keshavcreates.foodieapi.entity.UserEntity;
+import in.keshavcreates.foodieapi.exception.DuplicateResourceException;
 import in.keshavcreates.foodieapi.io.UserRequest;
 import in.keshavcreates.foodieapi.io.UserResponse;
 import in.keshavcreates.foodieapi.repository.UserRepository;
@@ -23,6 +24,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponse registerUser(UserRequest userRequest) {
+        userRepository.findByEmail(userRequest.getEmail()).ifPresent(existing -> {
+            throw new DuplicateResourceException("User already exists with email: " + userRequest.getEmail());
+        });
         UserEntity userEntity = convertToEntity(userRequest);
         userRepository.save(userEntity);
         return convertToResponse(userEntity);
