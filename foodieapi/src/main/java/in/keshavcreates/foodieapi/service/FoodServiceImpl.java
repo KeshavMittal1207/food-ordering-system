@@ -3,6 +3,7 @@
     import com.cloudinary.Cloudinary;
     import com.cloudinary.utils.ObjectUtils;
     import in.keshavcreates.foodieapi.entity.FoodEntity;
+    import in.keshavcreates.foodieapi.exception.ResourceNotFoundException;
     import in.keshavcreates.foodieapi.io.FoodRequest;
     import in.keshavcreates.foodieapi.io.FoodResponse;
     import in.keshavcreates.foodieapi.io.UploadedImage;
@@ -56,7 +57,7 @@
             }
 
         public FoodResponse getFoodById(String id) {
-            FoodEntity entity = foodRepository.findById(id).orElseThrow(() -> new RuntimeException("Food not found for the id:" + id));
+            FoodEntity entity = foodRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Food not found for id: " + id));
             return convertToResponse(entity);
         }
 
@@ -89,11 +90,12 @@
             }
         }
         public void deleteFood(String id) {
-            FoodEntity foodEntity = foodRepository.findById(id).orElseThrow(() -> new RuntimeException(""));
+            FoodEntity foodEntity = foodRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Food not found for id: " + id));
             boolean isFileDelete = deleteFile(foodEntity.getImagePublicId());
             if (isFileDelete) {
                 foodRepository.deleteById(id);
             } else {
+                throw new IllegalStateException("Unable to delete food image from Cloudinary");
             }
         }
     }
