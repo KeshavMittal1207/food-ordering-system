@@ -1,12 +1,10 @@
 package in.keshavcreates.foodieapi.service;
 
 import in.keshavcreates.foodieapi.entity.CartEntity;
-import in.keshavcreates.foodieapi.entity.UserEntity;
 import in.keshavcreates.foodieapi.io.CartRequest;
 import in.keshavcreates.foodieapi.io.CartResponse;
 import in.keshavcreates.foodieapi.repository.CartRepository;
 import jakarta.transaction.Transactional;
-import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

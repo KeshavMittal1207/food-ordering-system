@@ -6,7 +6,6 @@ import in.keshavcreates.foodieapi.filters.UsernameValidationFilter;
 import in.keshavcreates.foodieapi.service.AppUserDetailsService;
 import in.keshavcreates.foodieapi.util.JwtUtil;
 import jakarta.servlet.Filter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,6 +31,13 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
         private final JwtUtil jwtUtil;
+
+        @org.springframework.beans.factory.annotation.Value("${frontend.user.url}")
+        private String frontendUserUrl;
+
+        @org.springframework.beans.factory.annotation.Value("${frontend.admin.url}")
+        private String frontendAdminUrl;
+
         private final AppUserDetailsService appUserDetailsService;
 
         public SecurityConfig(JwtUtil jwtUtil , AppUserDetailsService appUserDetailsService){
@@ -53,18 +58,23 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/foods/getAll", "/api/foods/getFood/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Add this line
+                        .requestMatchers("/api/login", "/api/register", "/api/forgot-password", "/api/reset-password").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/foods/getAll", "/api/foods/getFood/**", "/api/reviews/food/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/foods").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/foods/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/foods/deleteFood/**").hasRole("ADMIN")
+                        .requestMatchers("/api/orders/all").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/orders/*/status").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-//                .addFilterBefore(usernameValidationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -83,7 +93,21 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Remove trailing slash from allowed origins
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        String userOrigin = frontendUserUrl != null ? frontendUserUrl.replaceAll("/+$", "") : "";
+        String adminOrigin = frontendAdminUrl != null ? frontendAdminUrl.replaceAll("/+$", "") : "";
+        java.util.List<String> allowedOrigins = new java.util.ArrayList<>(Arrays.asList(
+                "http://localhost:[*]",
+                "https://localhost:[*]",
+                "http://127.0.0.1:[*]",
+                "https://127.0.0.1:[*]"
+        ));
+        if (userOrigin != null && !userOrigin.isEmpty()) {
+            allowedOrigins.add(userOrigin);
+        }
+        if (adminOrigin != null && !adminOrigin.isEmpty()) {
+            allowedOrigins.add(adminOrigin);
+        }
+        configuration.setAllowedOriginPatterns(allowedOrigins);
 
         // Add all necessary HTTP methods
         configuration.setAllowedMethods(Arrays.asList(

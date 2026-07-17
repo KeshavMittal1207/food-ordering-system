@@ -3,7 +3,6 @@ package in.keshavcreates.foodieapi.filters;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 public class RequestWrapperFilter implements Filter {

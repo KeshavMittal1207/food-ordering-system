@@ -8,6 +8,7 @@
     import in.keshavcreates.foodieapi.io.FoodResponse;
     import in.keshavcreates.foodieapi.io.UploadedImage;
     import in.keshavcreates.foodieapi.repository.FoodRepository;
+    import in.keshavcreates.foodieapi.repository.ReviewRepository;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
     import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,9 @@
 
         @Autowired
         private Cloudinary cloudinary;
+
+        @Autowired
+        private ReviewRepository reviewRepository;
 
         public UploadedImage uploadFile(MultipartFile multipartFile) {
             try {
@@ -68,9 +72,13 @@
                     .description(request.getDescription())
                     .category(request.getCategory())
                     .price(request.getPrice())
+                    .available(request.isAvailable())
+                    .bestSeller(request.isBestSeller())
                     .build();
         }
         public FoodResponse convertToResponse(FoodEntity foodEntity){
+            Double avgRating = reviewRepository.getAverageRatingForFood(foodEntity.getId());
+            double rating = avgRating != null ? Math.round(avgRating * 10.0) / 10.0 : 0.0;
             return FoodResponse.builder()
                     .id(foodEntity.getId())
                     .name(foodEntity.getName())
@@ -78,6 +86,9 @@
                     .imageUrl((foodEntity.getImageUrl()))
                     .category(foodEntity.getCategory())
                     .description(foodEntity.getDescription())
+                    .available(foodEntity.isAvailable())
+                    .bestSeller(foodEntity.isBestSeller())
+                    .rating(rating)
                     .build();
         }
         public boolean deleteFile(String publicId){
@@ -97,5 +108,47 @@
             } else {
                 throw new IllegalStateException("Unable to delete food image from Cloudinary");
             }
+        }
+
+        @Override
+        public FoodResponse updateFood(String id, FoodRequest request, MultipartFile file) {
+            FoodEntity food = foodRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Food not found for id: " + id));
+            food.setName(request.getName());
+            food.setDescription(request.getDescription());
+            food.setPrice(request.getPrice());
+            food.setCategory(request.getCategory());
+            food.setAvailable(request.isAvailable());
+            food.setBestSeller(request.isBestSeller());
+            
+            if (file != null && !file.isEmpty()) {
+                if (food.getImagePublicId() != null) {
+                    deleteFile(food.getImagePublicId());
+                }
+                UploadedImage uploadedImage = uploadFile(file);
+                food.setImageUrl(uploadedImage.getImageUrl());
+                food.setImagePublicId(uploadedImage.getPublicId());
+            }
+            
+            FoodEntity updated = foodRepository.save(food);
+            return convertToResponse(updated);
+        }
+
+        @Override
+        public FoodResponse toggleAvailability(String id) {
+            FoodEntity food = foodRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Food not found for id: " + id));
+            food.setAvailable(!food.isAvailable());
+            FoodEntity updated = foodRepository.save(food);
+            return convertToResponse(updated);
+        }
+
+        @Override
+        public FoodResponse toggleBestSeller(String id) {
+            FoodEntity food = foodRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Food not found for id: " + id));
+            food.setBestSeller(!food.isBestSeller());
+            FoodEntity updated = foodRepository.save(food);
+            return convertToResponse(updated);
         }
     }

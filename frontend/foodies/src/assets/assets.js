@@ -13,25 +13,25 @@ export const assets = {
     cart
 }
 export const categories = [
-   { category:'Biryani',
+   { category:'Veg Biryani',
     icon:biryani}
 ,
-   { category:'Burger',
+   { category:'Veg Burgers',
     icon:burger}
 ,{
-    category:'Cakes',
+    category:'Eggless Cakes',
     icon:cakes
 },{
-    category:'Ice cream',
+    category:'Desserts & Ice cream',
     icon:icecream
 },{
-    category:'Pizza',
+    category:'Pure Veg Pizza',
     icon:pizza
 },{
-    category:'Rolls',
+    category:'Veg Rolls',
     icon:rolls
 },{
-    category:'Salad',
+    category:'Fresh Salads',
     icon:salad
 }
 ]
