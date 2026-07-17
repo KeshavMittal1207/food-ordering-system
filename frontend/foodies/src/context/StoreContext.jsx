@@ -34,28 +34,33 @@ export const StoreContextProvider = (props) => {
   };
 
   useEffect(() => {
-    if (!token) {
-      setFoodList([]);
-      setQuantities({});
-      return;
-    }
-    async function loadData() {
+    async function loadFoods() {
       try {
         const foods = await fetchFoodList();
         setFoodList(foods);
-
-        const cartRes = await fetchCartList();
-        if (cartRes && cartRes.items) {
-          setQuantities(cartRes.items); // items is already { foodId: quantity }
-        } else {
-          console.warn("Cart response is missing items:", cartRes);
-        }
       } catch (err) {
-        console.error("Failed to load data", err);
+        console.error("Failed to load foods", err);
       }
     }
+    loadFoods();
+  }, []);
 
-    loadData();
+  useEffect(() => {
+    if (!token) {
+      setQuantities({});
+      return;
+    }
+    async function loadCart() {
+      try {
+        const cartRes = await fetchCartList();
+        if (cartRes && cartRes.items) {
+          setQuantities(cartRes.items);
+        }
+      } catch (err) {
+        console.error("Failed to load cart", err);
+      }
+    }
+    loadCart();
   }, [token]);
 
 
@@ -65,11 +70,26 @@ export const StoreContextProvider = (props) => {
     }
   }, [token]);
 
+  const getCartTotal = () => {
+    let total = 0;
+    for (const foodId in quantities) {
+      if (quantities[foodId] > 0) {
+        const itemInfo = foodList.find((product) => product.id === foodId);
+        if (itemInfo) {
+          total += itemInfo.price * quantities[foodId];
+        }
+      }
+    }
+    return total;
+  };
+
   const contextValue = {
     foodList,
     quantities,
+    setQuantities,
     increaseQuantity,
     decreaseQuantity,
+    getCartTotal,
     token,
     setToken,
   };
@@ -80,3 +100,4 @@ export const StoreContextProvider = (props) => {
     </StoreContext.Provider>
   );
 };
+

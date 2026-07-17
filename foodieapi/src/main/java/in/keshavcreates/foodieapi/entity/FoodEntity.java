@@ -25,4 +25,8 @@ public class FoodEntity {
     private String category;
     private String imageUrl;
     private String imagePublicId;
+    @Builder.Default
+    private boolean available = true;
+    @Builder.Default
+    private boolean bestSeller = false;
 }

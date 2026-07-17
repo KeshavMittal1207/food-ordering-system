@@ -4,6 +4,8 @@ import in.keshavcreates.foodieapi.io.AuthenticationRequest;
 import in.keshavcreates.foodieapi.io.AuthenticationResponse;
 import in.keshavcreates.foodieapi.service.AppUserDetailsService;
 import in.keshavcreates.foodieapi.util.JwtUtil;
+import lombok.Value;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +28,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthenticationResponse login(@RequestBody AuthenticationRequest authenticationRequest){
+        System.out.println("LOGIN CONTROLLER HIT");
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail() , authenticationRequest.getPassword()));
         final UserDetails userDetails = appUserDetailsService.loadUserByUsername(authenticationRequest.getEmail());
         final String jwtToken = jwtUtil.generateToken(userDetails);

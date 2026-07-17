@@ -1,5 +1,6 @@
 import React,{useState} from 'react'
 import Header from '../../components/Header/Header.jsx'
+import BestSellers from '../../components/BestSellers/BestSellers.jsx'
 import ExploreMenu from '../../components/ExploreMenu/ExploreMenu.jsx'
 import FoodDisplay from '../../components/FoodDisplay/FoodDisplay.jsx'
  
@@ -8,6 +9,7 @@ const Home = () => {
   return (
     <main className='container'>
         <Header/>
+        <BestSellers />
         <ExploreMenu category={category} setCategory={setCategory}/>
         <FoodDisplay category={category} searchText={''}/>
     </main>

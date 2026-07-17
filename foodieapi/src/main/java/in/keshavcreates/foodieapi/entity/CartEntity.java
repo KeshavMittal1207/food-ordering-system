@@ -23,6 +23,7 @@ public class CartEntity {
     @CollectionTable(name = "cart_items",joinColumns = @JoinColumn(name = "cart_id"))
     @MapKeyColumn(name = "foodId")
     @Column(name = "quantity")
+    @Builder.Default
     private Map<String , Integer> items = new HashMap<>();
 
 

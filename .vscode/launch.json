@@ -1,0 +1,32 @@
+{
+    "configurations": [
+        
+        
+        {
+            "type": "java",
+            "name": "Spring Boot-FoodieapiApplication<foodieapi>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "in.keshavcreates.foodieapi.FoodieapiApplication",
+            "projectName": "foodieapi",
+            "args": "",
+            "env": {
+                "SPRING_DATASOURCE_URL":"jdbc:mysql://localhost:3306/FoodiesDb",
+                "SPRING_DATASOURCE_USERNAME":"root",
+                "SPRING_DATASOURCE_PASSWORD":"12345",
+
+                "CLOUDINARY_CLOUD_NAME":"dfpdztdnx",
+                "CLOUDINARY_API_KEY":"154296342646354",
+                "CLOUDINARY_API_SECRET":"a6KG6bOUGJpikwyXgfq44DGynFc",
+
+                "JWT_SECRET_KEY":"a07cdc3c941f1158a0e0ac437c8a507ed05b002c268a900298843b903566260c",
+
+                "RAZORPAY_TEST_ID":"rzp_test_T8ARBvNmHLYKBN",
+                "RAZORPAY_TEST_SECRET":"teAMkoD7Nsd5cmgXzbOC4VkN",
+
+                "FRONTEND_USER_URL":"http://localhost:5174/",
+                "FRONTEND_ADMIN_URL":"http://localhost:5173/"
+            }
+        }
+    ]
+}

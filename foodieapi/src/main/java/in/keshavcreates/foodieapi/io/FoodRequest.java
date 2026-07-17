@@ -14,4 +14,6 @@ public class FoodRequest {
     private  String description;
     private double price;
     private String category;
+    private boolean available;
+    private boolean bestSeller;
 }

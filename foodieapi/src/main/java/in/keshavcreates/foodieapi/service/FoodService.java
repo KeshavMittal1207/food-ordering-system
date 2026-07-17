@@ -21,6 +21,9 @@ public interface FoodService {
 
     void deleteFood(String id);
 
+    FoodResponse updateFood(String id, FoodRequest request, MultipartFile file);
 
+    FoodResponse toggleAvailability(String id);
 
+    FoodResponse toggleBestSeller(String id);
 }

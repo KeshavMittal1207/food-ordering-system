@@ -53,4 +53,27 @@ public class FoodController {
         foodService.deleteFood(id);
     }
 
+    @PutMapping("/{id}")
+    public FoodResponse updateFood(@PathVariable("id") String id,
+                                   @RequestPart("food") String foodString,
+                                   @RequestPart(value = "file", required = false) MultipartFile file) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        FoodRequest request = null;
+        try {
+            request = objectMapper.readValue(foodString, FoodRequest.class);
+        } catch (JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "Invalid JSON format");
+        }
+        return foodService.updateFood(id, request, file);
+    }
+
+    @PutMapping("/{id}/toggle-availability")
+    public FoodResponse toggleAvailability(@PathVariable("id") String id) {
+        return foodService.toggleAvailability(id);
+    }
+
+    @PutMapping("/{id}/toggle-bestseller")
+    public FoodResponse toggleBestSeller(@PathVariable("id") String id) {
+        return foodService.toggleBestSeller(id);
+    }
 }
