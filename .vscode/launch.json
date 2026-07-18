@@ -6,11 +6,11 @@
             "type": "java",
             "name": "Spring Boot-FoodieapiApplication<foodieapi>",
             "request": "launch",
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/foodieapi",
             "mainClass": "in.keshavcreates.foodieapi.FoodieapiApplication",
             "projectName": "foodieapi",
             "args": "",
-            "envFile":"${workspaceFolder}/.env"
+            "envFile":"${workspaceFolder}/foodieapi/.env"
         }
     ]
 }

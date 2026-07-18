@@ -100,7 +100,6 @@ public class OrderServiceImpl implements OrderService {
                 orderRequestJson.put("amount", (int) Math.round(finalAmount * 100)); // amount in paise
                 orderRequestJson.put("currency", "INR");
                 orderRequestJson.put("receipt", "txn_" + UUID.randomUUID().toString().substring(0, 8));
-                
                 com.razorpay.Order razorpayOrder = client.orders.create(orderRequestJson);
                 razorpayOrderId = razorpayOrder.get("id");
             } catch (Exception e) {

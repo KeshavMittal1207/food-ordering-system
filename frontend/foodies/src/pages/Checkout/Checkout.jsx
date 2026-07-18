@@ -101,8 +101,8 @@ const Checkout = () => {
     }
 
     const options = {
-      key: orderRes.razorpayKeyId || 'rzp_test_T8ARBvNmHLYKBN', // Load dynamically from backend configuration
-      amount: Math.round(grandTotal * 100), // in paise
+      key: orderRes.razorpayKeyId,
+      amount: Math.round(grandTotal * 100), 
       currency: 'INR',
       name: 'Urban Bites',
       description: 'Delhi Pure Veg Gourmet Experience',
@@ -120,7 +120,7 @@ const Checkout = () => {
           navigate('/myorders');
         } catch (error) {
           toast.error('Payment verification failed. Please contact support.');
-        } finally {
+        } finally { 
           setLoading(false);
         }
       },
